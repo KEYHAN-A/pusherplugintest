@@ -14,4 +14,5 @@ var app_key = 'b3c0c47415432dd2514e';
 var channel_name = 'my-channel';
 var event_name = 'my-event';
 
-pusherAndroid.connect(app_key, channel_name, event_name);
+pusherAndroid.connect(app_key, channel_name);
+pusherAndroid.newEvent(event_name);

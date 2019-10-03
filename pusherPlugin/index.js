@@ -1,10 +1,10 @@
 module.exports = {
-    connect:function(app_key, channel_name, event_name) {
+    connect:function(app_key, channel_name) {
         PusherOptions = com.pusher.client.PusherOptions;
         Pusher = com.pusher.client.Pusher;
         Channel = com.pusher.client.channel.Channel;
         PusherEvent = com.pusher.client.channel.PusherEvent;
-        SubscriptionEventListener = com.pusher.client.channel.SubscriptionEventListener;
+        ChannelEventListener = com.pusher.client.channel.ChannelEventListener;
 
         const options = new PusherOptions().setCluster("eu");
         const pusher = new Pusher(app_key, options);
@@ -12,27 +12,17 @@ module.exports = {
         pusher.connect();
 
         const channel = new Channel(pusher.subscribe(channel_name));
+        connectedChannel = pusher.getChannel(channel_name);
+    },
+    newEvent:function(event_name) {
+        SubscriptionEventListener = com.pusher.client.channel.SubscriptionEventListener;
 
-        /*let sel = new com.pusher.client.channel.SubscriptionEventListener({
-            onEvent: function(channel, event, data) {
-                console.log("Event", event, "received event with data: " + JSON.stringify(data));
+        let sel = new SubscriptionEventListener({
+            onEvent: function(event) {
+                console.log(event);
             }
-        });*/
+        });
 
-        let EventListener;
-        function initializeEventListener() {
-            EventListener = java.lang.Object.extend({
-                interfaces: [com.pusher.client.channel.SubscriptionEventListener],
-                onEvent: function() {
-                    console.log("WHATEVER");
-                }
-            });
-        }
-        initializeEventListener();
-
-        console.log(new EventListener());
-        //channel.bind(event_name, new EventListener());
-
-
+        connectedChannel.bind(event_name, sel);
     }
 };
