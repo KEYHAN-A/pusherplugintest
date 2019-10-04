@@ -5,7 +5,6 @@ module.exports = {
         Channel = com.pusher.client.channel.Channel;
         PusherEvent = com.pusher.client.channel.PusherEvent;
         ChannelEventListener = com.pusher.client.channel.ChannelEventListener;
-
         const options = new PusherOptions().setCluster("eu");
         const pusher = new Pusher(app_key, options);
 
@@ -14,13 +13,13 @@ module.exports = {
         const channel = new Channel(pusher.subscribe(channel_name));
         connectedChannel = pusher.getChannel(channel_name);
     },
-    newEvent:function(event_name) {
+    listenToEvent:function(event_name, callback) {
         SubscriptionEventListener = com.pusher.client.channel.SubscriptionEventListener;
 
         let sel = new SubscriptionEventListener({
-            onEvent: function(event) {
-                console.log(event);
-            }
+            onEvent: ((event) => {
+                callback(event);
+            })
         });
 
         connectedChannel.bind(event_name, sel);
